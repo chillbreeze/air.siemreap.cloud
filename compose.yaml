@@ -1,0 +1,42 @@
+services:
+  aqi-dashboard:
+    image: python:3.12-slim
+    container_name: aqi-dashboard
+    network_mode: host
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    environment:
+      - ENTITY_AQI=sensor.pms5003_aqi_outdoor_01
+      - ENTITY_AQI_CORRECTED=sensor.outdoor_pm2_5_corrected_aqi
+      - ENTITY_PM1=sensor.pms5003_pm1_outdoor_01
+      - ENTITY_PM25=sensor.pms5003_pm25_outdoor_01
+      - ENTITY_PM10=sensor.pms5003_pm10_outdoor_01
+      - ENTITY_TEMP=sensor.sht30_temperature_outdoor_01
+      - ENTITY_HUMIDITY=sensor.sht30_humidity_outdoor_01
+      - ENTITY_PRESSURE=sensor.sht30_pressure_outdoor_01
+      - ENTITY_HEAT_INDEX=sensor.sht30_heatindex_outdoor_01
+      - ENTITY_DEW_POINT=sensor.sht30_dewpoint_outdoor_01
+    command: |
+      bash -c "pip install --no-cache-dir flask requests gunicorn &&
+               gunicorn --bind 0.0.0.0:5080 --workers 2 app:app"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python -c "import urllib.request;
+          urllib.request.urlopen('http://localhost:5080/api/health')"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./blog/output:/var/www/blog:ro
+    depends_on:
+      - aqi-dashboard
+networks: {}
