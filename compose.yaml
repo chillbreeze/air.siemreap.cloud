@@ -10,6 +10,8 @@ services:
     env_file:
       - .env
     environment:
+      - HA_URL
+      - HA_TOKEN
       - ENTITY_AQI=sensor.environmental_outdoor_sen55_aqi_outdoor
       - ENTITY_AQI_CORRECTED=sensor.outdoor_pm2_5_corrected_aqi
       - ENTITY_PM1=sensor.environmental_outdoor_sen55_pm1_0
