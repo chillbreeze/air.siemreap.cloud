@@ -7,17 +7,20 @@ services:
     working_dir: /app
     volumes:
       - ./app:/app
+    env_file:
+      - .env
     environment:
-      - ENTITY_AQI=sensor.pms5003_aqi_outdoor_01
+      - ENTITY_AQI=sensor.environmental_outdoor_sen55_aqi_outdoor
       - ENTITY_AQI_CORRECTED=sensor.outdoor_pm2_5_corrected_aqi
-      - ENTITY_PM1=sensor.pms5003_pm1_outdoor_01
-      - ENTITY_PM25=sensor.pms5003_pm25_outdoor_01
-      - ENTITY_PM10=sensor.pms5003_pm10_outdoor_01
-      - ENTITY_TEMP=sensor.sht30_temperature_outdoor_01
-      - ENTITY_HUMIDITY=sensor.sht30_humidity_outdoor_01
-      - ENTITY_PRESSURE=sensor.sht30_pressure_outdoor_01
-      - ENTITY_HEAT_INDEX=sensor.sht30_heatindex_outdoor_01
-      - ENTITY_DEW_POINT=sensor.sht30_dewpoint_outdoor_01
+      - ENTITY_PM1=sensor.environmental_outdoor_sen55_pm1_0
+      - ENTITY_PM25=sensor.environmental_outdoor_sen55_pm2_5
+      - ENTITY_PM40=sensor.environmental_outdoor_sen55_pm4_0
+      - ENTITY_PM10=sensor.environmental_outdoor_sen55_pm10
+      - ENTITY_TEMP=sensor.environmental_outdoor_sen55_temperature
+      - ENTITY_HUMIDITY=sensor.environmental_outdoor_sen55_humidity
+      - ENTITY_PRESSURE=sensor.bme688_pressure_indoor_01
+      - ENTITY_HEAT_INDEX=sensor.environmental_outdoor_sen55_heat_index_outdoor
+      - ENTITY_DEW_POINT=sensor.environmental_outdoor_sen55_dew_point_outdoor
     command: |
       bash -c "pip install --no-cache-dir flask requests gunicorn &&
                gunicorn --bind 0.0.0.0:5080 --workers 2 app:app"

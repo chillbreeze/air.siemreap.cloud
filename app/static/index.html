@@ -170,7 +170,7 @@
 
         .pm-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 1px;
             background: var(--border);
             border: 1px solid var(--border);
@@ -303,11 +303,6 @@
                         <div class="pm-value loading" id="pm25">--</div>
                         <div class="pm-unit">&micro;g/m&sup3;</div>
                     </div>
-                    <div class="pm-card">
-                        <div class="pm-label">PM 10</div>
-                        <div class="pm-value loading" id="pm10">--</div>
-                        <div class="pm-unit">&micro;g/m&sup3;</div>
-                    </div>
                 </div>
             </section>
 
@@ -421,10 +416,6 @@
             if (data.pm25 !== undefined) {
                 document.getElementById('pm25').textContent = formatValue(data.pm25);
             }
-            if (data.pm10 !== undefined) {
-                document.getElementById('pm10').textContent = formatValue(data.pm10);
-            }
-
             // Update environmental values
             if (data.temperature !== undefined) {
                 document.getElementById('temp').textContent = formatValue(data.temperature, 1);

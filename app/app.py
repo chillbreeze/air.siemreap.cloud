@@ -19,6 +19,7 @@ ENTITIES = {
     'aqi': os.environ.get('ENTITY_AQI', 'sensor.air_quality_aqi'),
     'pm1': os.environ.get('ENTITY_PM1', 'sensor.air_quality_pm1'),
     'pm25': os.environ.get('ENTITY_PM25', 'sensor.air_quality_pm25'),
+    'pm40': os.environ.get('ENTITY_PM40', 'sensor.air_quality_pm40'),
     'pm10': os.environ.get('ENTITY_PM10', 'sensor.air_quality_pm10'),
     'temperature': os.environ.get('ENTITY_TEMP', 'sensor.air_quality_temperature'),
     'humidity': os.environ.get('ENTITY_HUMIDITY', 'sensor.air_quality_humidity'),
