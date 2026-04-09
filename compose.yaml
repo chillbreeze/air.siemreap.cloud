@@ -41,7 +41,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./blog/output:/var/www/blog:ro
     depends_on:
       - aqi-dashboard
 networks: {}
