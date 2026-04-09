@@ -4,13 +4,24 @@ A personal project demonstrating real-time air quality and climate monitoring fo
 
 **Live:** [air.siemreap.cloud](https://air.siemreap.cloud)
 
-![Dashboard screenshot](screenshots/aqi-website-screenshot.png)
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/aqi-website-screenshot-index.png" width="400" /><br/><sub>Home Page</sub></td>
+    <td align="center"><img src="screenshots/aqi-website-screenshot-aqi.png" width="400" /><br/><sub>AQI</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/aqi-website-screenshot-temp.png" width="400" /><br/><sub>Temperature</sub></td>
+    <td align="center"><img src="screenshots/aqi-website-screenshot-humidity.png" width="400" /><br/><sub>Humidity</sub></td>
+  </tr>
+</table>
 
 ---
 
 ## What It Does
 
 Pulls live sensor data from a physical IoT sensor in my apartment, processes it through a Python backend, and displays it on a public-facing web dashboard. Anyone can check current PM2.5, temperature, humidity, and other environmental metrics for my location in Siem Reap.
+
+Each metric on the home page is clickable and will show a 24-hour line graph of the metric. It is only updated every 5 minutes to smooth out the line to view the trends better.
 
 ## Why I Built It
 
@@ -26,6 +37,7 @@ Siem Reap has very little public air quality monitoring. During burning season t
 | Containerization | Docker + Docker Compose |
 | Data source | Home Assistant REST API |
 | Sensor | SEN55 environmental sensor |
+| Microcontroller | ESP32 C3 Mini | 
 
 ## Project Architecture
 
