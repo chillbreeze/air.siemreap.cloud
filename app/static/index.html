@@ -428,7 +428,7 @@
             }
             // Update environmental values
             if (data.temperature !== undefined) {
-                document.getElementById('temp').textContent = formatValue(data.temperature, 1);
+                document.getElementById('temp').textContent = formatValue(data.temperature, 0);
             }
             if (data.humidity !== undefined) {
                 document.getElementById('humidity').textContent = formatValue(data.humidity, 0);
@@ -437,10 +437,10 @@
                 document.getElementById('pressure').textContent = formatValue(data.pressure, 0);
             }
             if (data.heat_index !== undefined) {
-                document.getElementById('heat-index').textContent = formatValue(data.heat_index, 1);
+                document.getElementById('heat-index').textContent = formatValue(data.heat_index, 0);
             }
             if (data.dew_point !== undefined) {
-                document.getElementById('dew-point').textContent = formatValue(data.dew_point, 1);
+                document.getElementById('dew-point').textContent = formatValue(data.dew_point, 0);
             }
 
             // Update timestamp

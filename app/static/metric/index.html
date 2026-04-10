@@ -86,7 +86,7 @@
 
         .hero-title {
             font-family: 'Space Mono', monospace;
-            font-size: clamp(2rem, 8vw, 4rem);
+            font-size: clamp(1.4rem, 5.6vw, 2.8rem);
             font-weight: 700;
             line-height: 1;
             margin-bottom: 1.5rem;
@@ -106,8 +106,15 @@
             margin-bottom: 1.5rem;
         }
 
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
         .minmax {
-            font-size: 1rem;
+            font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             color: var(--text-dim);
@@ -130,7 +137,6 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
             color: var(--text-dim);
-            margin-bottom: 1.5rem;
         }
 
         .chart-container {
@@ -157,6 +163,14 @@
             letter-spacing: 0.1em;
         }
 
+        @media (max-width: 600px) {
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
         @media (max-width: 768px) {
             body { padding: 1rem; }
             header { flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
@@ -179,11 +193,13 @@
             <div class="hero-title" id="metric-name">--</div>
             <div class="hero-current" id="current-value" style="color: var(--text-dim);">--</div>
             <div class="hero-unit" id="metric-unit"></div>
-            <div class="minmax">High <span id="mm-high">--</span> &middot; Low <span id="mm-low">--</span></div>
         </div>
 
         <div class="chart-wrapper">
-            <div class="chart-title">Last 24 Hours</div>
+            <div class="chart-header">
+                <div class="chart-title">Last 24 Hours</div>
+                <div class="minmax">High <span id="mm-high">--</span> &middot; Low <span id="mm-low">--</span></div>
+            </div>
             <div class="chart-container">
                 <canvas id="chart"></canvas>
             </div>
@@ -237,7 +253,7 @@
             const data = await res.json();
             const val = data[key];
             if (val === undefined) return;
-            const decimals = ['temperature', 'heat_index', 'dew_point'].includes(key) ? 1 : 0;
+            const decimals = ['aqi'].includes(key) ? 0 : 1;
             const el = document.getElementById('current-value');
             el.textContent = val.toFixed(decimals);
             el.style.color = meta.color;
@@ -247,9 +263,9 @@
             const res = await fetch(`/api/minmax/${key}`);
             if (!res.ok) return;
             const data = await res.json();
-            const decimals = ['temperature', 'heat_index', 'dew_point'].includes(key) ? 1 : 0;
-            if (data.max !== null) document.getElementById('mm-high').textContent = data.max.toFixed(decimals);
-            if (data.min !== null) document.getElementById('mm-low').textContent = data.min.toFixed(decimals);
+            const decimals = ['aqi'].includes(key) ? 0 : 1;
+            if (data.max !== null) document.getElementById('mm-high').textContent = data.max.toFixed(0);
+            if (data.min !== null) document.getElementById('mm-low').textContent = data.min.toFixed(0);
         }
 
         async function loadChart() {
@@ -305,7 +321,7 @@
                             titleColor: '#666',
                             bodyColor: '#fafafa',
                             callbacks: {
-                                label: ctx => `${ctx.parsed.y.toFixed(1)} ${meta.unit}`
+                                label: ctx => `${ctx.parsed.y.toFixed(['aqi'].includes(key) ? 0 : 1)} ${meta.unit}`
                             }
                         }
                     },
