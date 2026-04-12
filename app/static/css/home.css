@@ -9,9 +9,8 @@
 
 .hero {
     text-align: center;
-    padding: 3rem 0 4rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 3rem;
+    padding: 3rem 0 2rem;
+    margin-bottom: 1.4rem;
 }
 
 .aqi-label {
@@ -134,10 +133,19 @@
     background: #0f0f0f;
 }
 
+.updated-rule {
+    display: none;
+    border: none;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+}
+
 .updated {
     font-size: 0.75rem;
+    font-weight: 300;
     color: var(--text-dim);
     letter-spacing: 0.05em;
+    margin-top: 1.5rem;
 }
 
 .error-state h2 {
@@ -183,6 +191,10 @@
 }
 
 @media (max-width: 768px) {
+    .updated-rule {
+        display: block;
+    }
+
     .hero {
         padding: 2rem 0 3rem;
     }

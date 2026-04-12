@@ -1,215 +1,288 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Current air quality in Siem Reap, Cambodia."/>
-    <meta content="air.siemreap.cloud" property="og:title" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://air.siemreap.cloud" />
-    <title>Air Quality - Siem Reap</title>
-    <link rel="icon" href="./images/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/shared.css">
-    <link rel="stylesheet" href="/static/css/home.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Air Quality Monitor</h1>
-            <span class="location">Siem Reap, Cambodia</span>
-        </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Current air quality in Siem Reap, Cambodia."
+        />
+        <meta content="air.siemreap.cloud" property="og:title" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://air.siemreap.cloud" />
+        <title>Air Quality - Siem Reap</title>
+        <link rel="icon" href="./images/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Space+Mono:wght@700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/static/css/shared.css" />
+        <link rel="stylesheet" href="/static/css/home.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Air Quality Monitor</h1>
+                <span class="location">Siem Reap, Cambodia</span>
+            </header>
 
-        <main>
-            <nav>
-                <a href="/" class="nav-link">HOME</a>
-                <a href="/faq/" class="nav-link">FAQ</a>
-            </nav>
+            <main>
+                <nav>
+                    <a href="/" class="nav-link">HOME</a>
+                    <a href="/faq/" class="nav-link">FAQ</a>
+                </nav>
 
-            <a href="/metric/aqi/" class="hero hero-link">
-                <div class="aqi-label">Air Quality Index</div>
-                <div class="aqi-value loading" id="aqi-raw">--</div>
-                <div class="aqi-status" id="aqi-status">Loading...</div>
-            </a>
+                <a href="/metric/aqi/" class="hero hero-link">
+                    <div class="aqi-label">Air Quality Index</div>
+                    <div class="aqi-value loading" id="aqi-raw">--</div>
+                    <div class="aqi-status" id="aqi-status">Loading...</div>
+                    <div class="updated" id="updated">Updated --</div>
+                    <hr class="updated-rule">
+                </a>
 
-            <section class="pm-section">
-                <h2>Particulate Matter</h2>
-                <div class="pm-grid">
-                    <a href="/metric/pm1/" class="pm-card pm-card-link">
-                        <div class="pm-label">PM 1.0</div>
-                        <div class="pm-value loading" id="pm1">--</div>
-                        <div class="pm-unit">&micro;g/m&sup3;</div>
+                <section class="pm-section">
+                    <h2>Particulate Matter</h2>
+                    <div class="pm-grid">
+                        <a href="/metric/pm1/" class="pm-card pm-card-link">
+                            <div class="pm-label">PM 1.0</div>
+                            <div class="pm-value loading" id="pm1">--</div>
+                            <div class="pm-unit">&micro;g/m&sup3;</div>
+                        </a>
+                        <a href="/metric/pm25/" class="pm-card pm-card-link">
+                            <div class="pm-label">PM 2.5</div>
+                            <div class="pm-value loading" id="pm25">--</div>
+                            <div class="pm-unit">&micro;g/m&sup3;</div>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="pm-section">
+                    <h2>Climate</h2>
+                    <div class="metrics-grid">
+                        <a
+                            href="/metric/temperature/"
+                            class="metric metric-link"
+                        >
+                            <div class="metric-label">Temperature</div>
+                            <div class="metric-value loading" id="temp">--</div>
+                            <div class="metric-unit">&deg;C</div>
+                        </a>
+                        <a
+                            href="/metric/heat_index/"
+                            class="metric metric-link"
+                        >
+                            <div class="metric-label">Feels Like</div>
+                            <div class="metric-value loading" id="heat-index">
+                                --
+                            </div>
+                            <div class="metric-unit">&deg;C</div>
+                        </a>
+
+                        <a href="/metric/dew_point/" class="metric metric-link">
+                            <div class="metric-label">Dew Point</div>
+                            <div class="metric-value loading" id="dew-point">
+                                --
+                            </div>
+                            <div class="metric-unit">&deg;C</div>
+                        </a>
+                        <a href="/metric/humidity/" class="metric metric-link">
+                            <div class="metric-label">Humidity</div>
+                            <div class="metric-value loading" id="humidity">
+                                --
+                            </div>
+                            <div class="metric-unit">%</div>
+                        </a>
+
+                        <a href="/metric/pressure/" class="metric metric-link">
+                            <div class="metric-label">Pressure</div>
+                            <div class="metric-value loading" id="pressure">
+                                --
+                            </div>
+                            <div class="metric-unit">hPa</div>
+                        </a>
+                    </div>
+                </section>
+            </main>
+
+            <footer>
+                <div class="footer-contact">
+                    <span>Built by Terry</span>
+                    <span>|</span>
+                    <a
+                        href="https://github.com/chillbreeze/air-siem-reap"
+                        target="_blank"
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+                            />
+                        </svg>
+                        GitHub
                     </a>
-                    <a href="/metric/pm25/" class="pm-card pm-card-link">
-                        <div class="pm-label">PM 2.5</div>
-                        <div class="pm-value loading" id="pm25">--</div>
-                        <div class="pm-unit">&micro;g/m&sup3;</div>
+                    <span>|</span>
+                    <a href="https://t.me/ProjectTerry" target="_blank">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.347l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.212z"
+                            />
+                        </svg>
+                        Message me
                     </a>
                 </div>
-            </section>
+            </footer>
+        </div>
 
-            <section class="pm-section">
-                <h2>Climate</h2>
-                <div class="metrics-grid">
-                    <a href="/metric/temperature/" class="metric metric-link">
-                        <div class="metric-label">Temperature</div>
-                        <div class="metric-value loading" id="temp">--</div>
-                        <div class="metric-unit">&deg;C</div>
-                    </a>
-                    <a href="/metric/heat_index/" class="metric metric-link">
-                        <div class="metric-label">Feels Like</div>
-                        <div class="metric-value loading" id="heat-index">--</div>
-                        <div class="metric-unit">&deg;C</div>
-                    </a>
+        <script>
+            // Configuration - Update these entity IDs to match your Home Assistant setup
+            const CONFIG = {
+                // Home Assistant API endpoint (the backend will proxy this)
+                apiEndpoint: "/api/states",
 
-                    <a href="/metric/dew_point/" class="metric metric-link">
-                        <div class="metric-label">Dew Point</div>
-                        <div class="metric-value loading" id="dew-point">--</div>
-                        <div class="metric-unit">&deg;C</div>
-                    </a>
-                    <a href="/metric/humidity/" class="metric metric-link">
-                        <div class="metric-label">Humidity</div>
-                        <div class="metric-value loading" id="humidity">--</div>
-                        <div class="metric-unit">%</div>
-                    </a>
+                // Entity IDs from Home Assistant - update these to match your setup
+                entities: {
+                    aqi: "sensor.pms5003_aqi_outdoor_01",
+                    pm1: "sensor.pms5003_pm1_outdoor_01",
+                    pm25: "sensor.pms5003_pm25_outdoor_01",
+                    pm10: "sensor.pms5003_pm10_outdoor_01",
+                    temperature: "sensor.sht30_temperature_outdoor_01",
+                    humidity: "sensor.sht30_humidity_outdoor_01",
+                    pressure: "sensor.sht30_pressuer_outdoor_01",
+                    heat_index: "sensor.sht30_heatindex_outdoor_01",
+                    dew_point: "sensor.sht30_dewpoint_outdoor_01",
+                },
 
-                    <a href="/metric/pressure/" class="metric metric-link">
-                        <div class="metric-label">Pressure</div>
-                        <div class="metric-value loading" id="pressure">--</div>
-                        <div class="metric-unit">hPa</div>
-                    </a>
-            </div>
-            </section>
-        </main>
+                // Refresh interval in milliseconds (30 seconds)
+                refreshInterval: 30000,
+            };
 
-        <footer>
-            <div class="updated" id="updated">Last updated: --</div>
-            <div class="footer-contact">
-                <span>Built by Terry</span>
-                <span>|</span>
-                <a href="https://github.com/chillbreeze/air-siem-reap" target="_blank">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                    GitHub
-                </a>
-                <span>|</span>
-                <a href="https://t.me/ProjectTerry" target="_blank">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.347l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.212z"/></svg>
-                    Message me
-                </a>
-            </div>
-        </footer>
-    </div>
-
-    <script>
-        // Configuration - Update these entity IDs to match your Home Assistant setup
-        const CONFIG = {
-            // Home Assistant API endpoint (the backend will proxy this)
-            apiEndpoint: '/api/states',
-            
-            // Entity IDs from Home Assistant - update these to match your setup
-            entities: {
-                aqi: 'sensor.pms5003_aqi_outdoor_01',
-                pm1: 'sensor.pms5003_pm1_outdoor_01',
-                pm25: 'sensor.pms5003_pm25_outdoor_01',
-                pm10: 'sensor.pms5003_pm10_outdoor_01',
-                temperature: 'sensor.sht30_temperature_outdoor_01',
-                humidity: 'sensor.sht30_humidity_outdoor_01',
-                pressure: 'sensor.sht30_pressuer_outdoor_01',
-                heat_index: 'sensor.sht30_heatindex_outdoor_01',
-                dew_point: 'sensor.sht30_dewpoint_outdoor_01'
-            },
-            
-            // Refresh interval in milliseconds (30 seconds)
-            refreshInterval: 30000
-        };
-
-        // AQI status mapping
-        function getAqiStatus(aqi) {
-            const value = parseInt(aqi);
-            if (value <= 50) return { text: 'Good', class: 'aqi-good' };
-            if (value <= 100) return { text: 'Moderate', class: 'aqi-moderate' };
-            if (value <= 150) return { text: 'Unhealthy for Sensitive Groups', class: 'aqi-unhealthy-sensitive' };
-            if (value <= 200) return { text: 'Unhealthy', class: 'aqi-unhealthy' };
-            if (value <= 300) return { text: 'Very Unhealthy', class: 'aqi-very-unhealthy' };
-            return { text: 'Hazardous', class: 'aqi-hazardous' };
-        }
-
-        // Format number for display
-        function formatValue(value, decimals = 0) {
-            const num = parseFloat(value);
-            if (isNaN(num)) return '--';
-            return num.toFixed(decimals);
-        }
-
-        // Update the DOM with new values
-        function updateDisplay(data) {
-            // Remove loading states
-            document.querySelectorAll('.loading').forEach(el => el.classList.remove('loading'));
-
-            // Update AQI (corrected value for hero)
-            const aqiEl = document.getElementById('aqi-raw');
-            const statusEl = document.getElementById('aqi-status');
-            if (data.aqi !== undefined) {
-               //  const aqi = formatValue(data.aqi_corrected);
-		const aqi = formatValue(data.aqi);
-                aqiEl.textContent = aqi;
-                const status = getAqiStatus(aqi);
-                statusEl.textContent = status.text;
-                aqiEl.className = 'aqi-value ' + status.class;
-                statusEl.className = 'aqi-status ' + status.class;
+            // AQI status mapping
+            function getAqiStatus(aqi) {
+                const value = parseInt(aqi);
+                if (value <= 50) return { text: "Good", class: "aqi-good" };
+                if (value <= 100)
+                    return { text: "Moderate", class: "aqi-moderate" };
+                if (value <= 150)
+                    return {
+                        text: "Unhealthy for Sensitive Groups",
+                        class: "aqi-unhealthy-sensitive",
+                    };
+                if (value <= 200)
+                    return { text: "Unhealthy", class: "aqi-unhealthy" };
+                if (value <= 300)
+                    return {
+                        text: "Very Unhealthy",
+                        class: "aqi-very-unhealthy",
+                    };
+                return { text: "Hazardous", class: "aqi-hazardous" };
             }
 
-            // Update AQI Raw
-            if (data.aqi !== undefined) {
-                document.getElementById('aqi-raw').textContent = formatValue(data.aqi);
+            // Format number for display
+            function formatValue(value, decimals = 0) {
+                const num = parseFloat(value);
+                if (isNaN(num)) return "--";
+                return num.toFixed(decimals);
             }
 
-            // Update PM values
-            if (data.pm1 !== undefined) {
-                document.getElementById('pm1').textContent = formatValue(data.pm1);
-            }
-            if (data.pm25 !== undefined) {
-                document.getElementById('pm25').textContent = formatValue(data.pm25);
-            }
-            // Update environmental values
-            if (data.temperature !== undefined) {
-                document.getElementById('temp').textContent = formatValue(data.temperature, 0);
-            }
-            if (data.humidity !== undefined) {
-                document.getElementById('humidity').textContent = formatValue(data.humidity, 0);
-            }
-            if (data.pressure !== undefined) {
-                document.getElementById('pressure').textContent = formatValue(data.pressure, 0);
-            }
-            if (data.heat_index !== undefined) {
-                document.getElementById('heat-index').textContent = formatValue(data.heat_index, 0);
-            }
-            if (data.dew_point !== undefined) {
-                document.getElementById('dew-point').textContent = formatValue(data.dew_point, 0);
+            // Update the DOM with new values
+            function updateDisplay(data) {
+                // Remove loading states
+                document
+                    .querySelectorAll(".loading")
+                    .forEach((el) => el.classList.remove("loading"));
+
+                // Update AQI (corrected value for hero)
+                const aqiEl = document.getElementById("aqi-raw");
+                const statusEl = document.getElementById("aqi-status");
+                if (data.aqi !== undefined) {
+                    //  const aqi = formatValue(data.aqi_corrected);
+                    const aqi = formatValue(data.aqi);
+                    aqiEl.textContent = aqi;
+                    const status = getAqiStatus(aqi);
+                    statusEl.textContent = status.text;
+                    aqiEl.className = "aqi-value " + status.class;
+                    statusEl.className = "aqi-status " + status.class;
+                }
+
+                // Update AQI Raw
+                if (data.aqi !== undefined) {
+                    document.getElementById("aqi-raw").textContent =
+                        formatValue(data.aqi);
+                }
+
+                // Update PM values
+                if (data.pm1 !== undefined) {
+                    document.getElementById("pm1").textContent = formatValue(
+                        data.pm1,
+                    );
+                }
+                if (data.pm25 !== undefined) {
+                    document.getElementById("pm25").textContent = formatValue(
+                        data.pm25,
+                    );
+                }
+                // Update environmental values
+                if (data.temperature !== undefined) {
+                    document.getElementById("temp").textContent = formatValue(
+                        data.temperature,
+                        0,
+                    );
+                }
+                if (data.humidity !== undefined) {
+                    document.getElementById("humidity").textContent =
+                        formatValue(data.humidity, 0);
+                }
+                if (data.pressure !== undefined) {
+                    document.getElementById("pressure").textContent =
+                        formatValue(data.pressure, 0);
+                }
+                if (data.heat_index !== undefined) {
+                    document.getElementById("heat-index").textContent =
+                        formatValue(data.heat_index, 0);
+                }
+                if (data.dew_point !== undefined) {
+                    document.getElementById("dew-point").textContent =
+                        formatValue(data.dew_point, 0);
+                }
+
+                // Update timestamp
+                document.getElementById("updated").textContent =
+                    "Updated " +
+                    new Date().toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                    });
             }
 
-            // Update timestamp
-            document.getElementById('updated').textContent = 
-                'Last updated: ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-        }
-
-        // Fetch data from the backend API
-        async function fetchData() {
-            try {
-                const response = await fetch('/api/sensors');
-                if (!response.ok) throw new Error('Failed to fetch data');
-                const data = await response.json();
-                updateDisplay(data);
-            } catch (error) {
-                console.error('Error fetching sensor data:', error);
+            // Fetch data from the backend API
+            async function fetchData() {
+                try {
+                    const response = await fetch("/api/sensors");
+                    if (!response.ok) throw new Error("Failed to fetch data");
+                    const data = await response.json();
+                    updateDisplay(data);
+                } catch (error) {
+                    console.error("Error fetching sensor data:", error);
+                }
             }
-        }
 
-        // Initial fetch and set up polling
-        fetchData();
-        setInterval(fetchData, CONFIG.refreshInterval);
-    </script>
-</body>
+            // Initial fetch and set up polling
+            fetchData();
+            setInterval(fetchData, CONFIG.refreshInterval);
+        </script>
+    </body>
 </html>
