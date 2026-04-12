@@ -5,7 +5,6 @@ nav {
 .hero {
     text-align: center;
     padding: 3rem 0 4rem;
-    border-bottom: 1px solid var(--border);
     margin-bottom: 3rem;
 }
 
