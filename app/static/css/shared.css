@@ -1,0 +1,127 @@
+:root {
+    --bg: #0a0a0a;
+    --text: #fafafa;
+    --text-dim: #666;
+    --card-bg: #141414;
+    --border: #222;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+header h1 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.location {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+}
+
+.nav-link {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-decoration: none;
+    margin-top: 0.4rem;
+    display: inline-block;
+    transition: color 0.2s;
+}
+
+.nav-link + .nav-link {
+    margin-left: 1.5rem;
+}
+
+.nav-link:hover {
+    color: var(--text);
+}
+
+footer {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.footer-text {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+}
+
+.footer-contact {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.footer-contact a {
+    color: var(--text-dim);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.2s;
+}
+
+.footer-contact a:hover {
+    color: var(--text);
+}
+
+.error-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-dim);
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+}

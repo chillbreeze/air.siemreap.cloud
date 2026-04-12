@@ -1,0 +1,92 @@
+nav {
+    margin-bottom: 3rem;
+}
+
+.hero {
+    text-align: center;
+    padding: 3rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+}
+
+.hero-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.hero-title {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1.4rem, 5.6vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+}
+
+.hero-current {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.hero-unit {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.minmax {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+}
+
+.minmax span {
+    font-family: 'Space Mono', monospace;
+    color: var(--text);
+}
+
+.chart-wrapper {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.chart-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+}
+
+@media (max-width: 600px) {
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+}
