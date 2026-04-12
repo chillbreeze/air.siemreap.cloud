@@ -1,3 +1,5 @@
+[![Lighthouse Audit](https://github.com/chillbreeze/air-siem-reap/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/chillbreeze/air-siem-reap/actions/workflows/lighthouse.yml)
+
 # air.siemreap.cloud
 
 A personal project demonstrating real-time air quality and climate monitoring for Siem Reap, Cambodia. This project showcases integration of IoT sensors, Home Assistant automation, and full-stack web development.
