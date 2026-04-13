@@ -186,7 +186,7 @@
                             titleColor: '#666',
                             bodyColor: '#fafafa',
                             callbacks: {
-                                label: ctx => `${ctx.parsed.y.toFixed(['aqi'].includes(key) ? 0 : 1)} ${meta.unit}`
+                                label: ctx => `${ctx.parsed.y.toFixed(['aqi', 'voc', 'nox'].includes(key) ? 0 : 1)} ${meta.unit}`
                             }
                         }
                     },
@@ -201,7 +201,8 @@
                             grid: { color: '#222' },
                             ticks: {
                                 color: '#666',
-                                callback: val => `${val} ${meta.unit}`
+                                precision: ['aqi', 'voc', 'nox'].includes(key) ? 0 : undefined,
+                                callback: val => `${['aqi', 'voc', 'nox'].includes(key) ? Math.round(val) : val} ${meta.unit}`
                             }
                         }
                     }
