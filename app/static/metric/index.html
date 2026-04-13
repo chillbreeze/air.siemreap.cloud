@@ -203,6 +203,8 @@
                         },
                         y: {
                             grid: { color: '#222' },
+                            min: key === 'nox' ? 0 : undefined,
+                            max: key === 'nox' ? 10 : undefined,
                             ticks: {
                                 color: '#666',
                                 precision: ['aqi', 'voc', 'nox'].includes(key) ? 0 : undefined,
