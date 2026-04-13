@@ -68,6 +68,8 @@
             pressure:   { label: 'Pressure',      unit: 'hPa',   color: '#94a3b8', bucketMinutes: 5 },
             heat_index: { label: 'Feels Like',    unit: '°C',    color: '#fb923c', bucketMinutes: 5 },
             dew_point:  { label: 'Dew Point',     unit: '°C',    color: '#34d399', bucketMinutes: 5 },
+            voc:        { label: 'VOC Index',      unit: 'index', color: '#c084fc', bucketMinutes: 5 },
+            nox:        { label: 'NOx Index',      unit: 'index', color: '#f87171', bucketMinutes: 5 },
         };
 
         function downsample(data, bucketMinutes) {
@@ -99,7 +101,7 @@
             const data = await res.json();
             const val = data[key];
             if (val === undefined) return;
-            const decimals = ['aqi'].includes(key) ? 0 : 1;
+            const decimals = ['aqi', 'voc', 'nox'].includes(key) ? 0 : 1;
             const el = document.getElementById('current-value');
             el.textContent = val.toFixed(decimals);
             el.style.color = meta.color;
@@ -109,7 +111,7 @@
             const res = await fetch(`/api/minmax/${key}`);
             if (!res.ok) return;
             const data = await res.json();
-            const decimals = ['aqi'].includes(key) ? 0 : 1;
+            const decimals = ['aqi', 'voc', 'nox'].includes(key) ? 0 : 1;
             if (data.max !== null) document.getElementById('mm-high').textContent = data.max.toFixed(0);
             if (data.min !== null) document.getElementById('mm-low').textContent = data.min.toFixed(0);
         }
