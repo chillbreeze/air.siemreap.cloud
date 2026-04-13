@@ -186,7 +186,11 @@
                             titleColor: '#666',
                             bodyColor: '#fafafa',
                             callbacks: {
-                                label: ctx => `${ctx.parsed.y.toFixed(['aqi', 'voc', 'nox'].includes(key) ? 0 : 1)} ${meta.unit}`
+                                label: ctx => {
+                                    const decimals = ['aqi', 'voc', 'nox'].includes(key) ? 0 : 1;
+                                    const unit = ['voc', 'nox'].includes(key) ? '' : ` ${meta.unit}`;
+                                    return `${ctx.parsed.y.toFixed(decimals)}${unit}`;
+                                }
                             }
                         }
                     },
@@ -202,7 +206,11 @@
                             ticks: {
                                 color: '#666',
                                 precision: ['aqi', 'voc', 'nox'].includes(key) ? 0 : undefined,
-                                callback: val => `${['aqi', 'voc', 'nox'].includes(key) ? Math.round(val) : val} ${meta.unit}`
+                                callback: val => {
+                                    const num = ['aqi', 'voc', 'nox'].includes(key) ? Math.round(val) : val;
+                                    const unit = ['voc', 'nox'].includes(key) ? '' : ` ${meta.unit}`;
+                                    return `${num}${unit}`;
+                                }
                             }
                         }
                     }
