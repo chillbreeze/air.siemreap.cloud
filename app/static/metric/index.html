@@ -248,27 +248,40 @@
 
             const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const labels = points.map(p => DAY_LABELS[new Date(p.date + 'T12:00:00').getDay()]);
-            const values = points.map(p => p.value);
+            const highs = points.map(p => p.high);
+            const lows = points.map(p => p.low);
+
+            const overallHigh = Math.max(...highs);
+            const overallLow = Math.min(...lows);
+            document.getElementById('mm7d-high').textContent = overallHigh.toFixed(0);
+            document.getElementById('mm7d-low').textContent = overallLow.toFixed(0);
 
             const decimals = key === 'aqi' ? 0 : 1;
-            const high = Math.max(...values);
-            const low = Math.min(...values);
-            document.getElementById('mm7d-high').textContent = high.toFixed(0);
-            document.getElementById('mm7d-low').textContent = low.toFixed(0);
 
             new Chart(document.getElementById('chart7d'), {
                 type: 'line',
                 data: {
                     labels,
-                    datasets: [{
-                        data: values,
-                        borderColor: meta.color,
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        tension: 0.3,
-                        fill: true,
-                        backgroundColor: meta.color + '18',
-                    }]
+                    datasets: [
+                        {
+                            data: highs,
+                            borderColor: meta.color,
+                            borderWidth: 1.5,
+                            pointRadius: 3,
+                            tension: 0.3,
+                            fill: '+1',
+                            backgroundColor: meta.color + '26',
+                        },
+                        {
+                            data: lows,
+                            borderColor: meta.color,
+                            borderWidth: 1.5,
+                            pointRadius: 3,
+                            tension: 0.3,
+                            fill: 'origin',
+                            backgroundColor: meta.color + '59',
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -283,7 +296,12 @@
                             titleColor: '#666',
                             bodyColor: '#fafafa',
                             callbacks: {
-                                label: ctx => `${ctx.parsed.y.toFixed(key === 'aqi' ? 0 : 1)} ${meta.unit}`
+                                label: (ctx) => {
+                                    const val = ctx.parsed.y.toFixed(decimals);
+                                    return ctx.datasetIndex === 0
+                                        ? `High: ${val} ${meta.unit}`
+                                        : `Low: ${val} ${meta.unit}`;
+                                }
                             }
                         }
                     },

@@ -202,7 +202,7 @@ INFLUX_ENTITIES = {
 
 @app.route('/api/history7d/<entity_key>')
 def get_history7d(entity_key):
-    """Fetch 7 days of history for a sensor from InfluxDB, averaged per day."""
+    """Fetch 7 days of daily high and low for a sensor from InfluxDB."""
     entry = INFLUX_ENTITIES.get(entity_key)
     if not entry:
         return jsonify({'error': 'Unknown entity'}), 404
@@ -210,39 +210,52 @@ def get_history7d(entity_key):
     measurement, entity_id = entry
 
     if entity_id is None:
-        query = f'''
+        base_query = f'''
 from(bucket: "{INFLUX_BUCKET}")
   |> range(start: -7d)
   |> filter(fn: (r) => r["_measurement"] == "{measurement}")
   |> filter(fn: (r) => r["_field"] == "value")
-  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
 '''
     else:
-        query = f'''
+        base_query = f'''
 from(bucket: "{INFLUX_BUCKET}")
   |> range(start: -7d)
   |> filter(fn: (r) => r["_measurement"] == "{measurement}")
   |> filter(fn: (r) => r["entity_id"] == "{entity_id}")
   |> filter(fn: (r) => r["_field"] == "value")
-  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
 '''
+
+    max_query = base_query + '  |> aggregateWindow(every: 1d, fn: max, createEmpty: false)'
+    min_query = base_query + '  |> aggregateWindow(every: 1d, fn: min, createEmpty: false)'
 
     try:
         with InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_ORG) as client:
             qapi = client.query_api()
-            result = qapi.query(query)
+            max_result = qapi.query(max_query)
+            min_result = qapi.query(min_query)
 
-        points = []
-        for table in result:
+        days = {}
+        for table in max_result:
             for record in table.records:
                 val = record.get_value()
                 if val is None:
                     continue
-                points.append({
-                    'date': record.get_time().strftime('%Y-%m-%d'),
-                    'value': round(val, 1),
-                })
+                date = record.get_time().strftime('%Y-%m-%d')
+                days.setdefault(date, {})['high'] = round(val, 1)
 
+        for table in min_result:
+            for record in table.records:
+                val = record.get_value()
+                if val is None:
+                    continue
+                date = record.get_time().strftime('%Y-%m-%d')
+                days.setdefault(date, {})['low'] = round(val, 1)
+
+        points = [
+            {'date': date, 'high': v['high'], 'low': v['low']}
+            for date, v in days.items()
+            if 'high' in v and 'low' in v
+        ]
         points.sort(key=lambda p: p['date'])
         return jsonify(points)
     except Exception as e:
