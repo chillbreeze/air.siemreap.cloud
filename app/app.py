@@ -81,6 +81,25 @@ def faq():
     return send_from_directory('static/faq', 'index.html')
 
 
+@app.route('/sitemap.xml')
+def sitemap():
+    """Serve sitemap for search engine indexing."""
+    xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://air.siemreap.cloud/</loc>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://air.siemreap.cloud/faq/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>'''
+    return app.response_class(xml, mimetype='application/xml')
+
+
 @app.route('/api/sensors')
 def get_sensors():
     """Fetch all sensor data from Home Assistant."""
