@@ -109,6 +109,20 @@ footer {
     color: var(--text);
 }
 
+.love-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.love-link:hover {
+    color: var(--text);
+}
+
+.love-link:visited {
+    color: inherit;
+}
+
 .error-state {
     text-align: center;
     padding: 4rem 2rem;
