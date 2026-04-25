@@ -5,7 +5,8 @@ Proxies requests to Home Assistant API and serves the static dashboard.
 """
 
 import os
-from flask import Flask, jsonify, send_from_directory
+from datetime import datetime
+from flask import Flask, jsonify, request, send_from_directory
 import requests
 from influxdb_client import InfluxDBClient
 
@@ -265,17 +266,21 @@ from(bucket: "{INFLUX_BUCKET}")
 
 @app.route('/api/heatmap/<entity_key>')
 def get_heatmap(entity_key):
-    """Fetch 365 days of daily averages for a sensor from InfluxDB."""
+    """Fetch daily averages for a sensor from InfluxDB for a given year."""
     entry = INFLUX_ENTITIES.get(entity_key)
     if not entry:
         return jsonify({'error': 'Unknown entity'}), 404
+
+    year = request.args.get('year', type=int, default=datetime.now().year)
+    range_start = f'{year}-01-01T00:00:00Z'
+    range_stop = f'{year + 1}-01-01T00:00:00Z'
 
     measurement, entity_id = entry
 
     if entity_id is None:
         query = f'''
 from(bucket: "{INFLUX_BUCKET}")
-  |> range(start: -365d)
+  |> range(start: {range_start}, stop: {range_stop})
   |> filter(fn: (r) => r["_measurement"] == "{measurement}")
   |> filter(fn: (r) => r["_field"] == "value")
   |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
@@ -283,7 +288,7 @@ from(bucket: "{INFLUX_BUCKET}")
     else:
         query = f'''
 from(bucket: "{INFLUX_BUCKET}")
-  |> range(start: -365d)
+  |> range(start: {range_start}, stop: {range_stop})
   |> filter(fn: (r) => r["_measurement"] == "{measurement}")
   |> filter(fn: (r) => r["entity_id"] == "{entity_id}")
   |> filter(fn: (r) => r["_field"] == "value")

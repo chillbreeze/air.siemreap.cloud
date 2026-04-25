@@ -62,10 +62,12 @@
         </div>
 
         <div class="chart-wrapper">
-            <div class="chart-header">
-                <div class="chart-title">This Year</div>
+            <div class="heatmap-nav">
+                <button class="heatmap-nav-btn" id="heatmap-prev" type="button" aria-label="Previous year">&#8249;</button>
+                <span class="heatmap-nav-year" id="heatmap-year-label"></span>
+                <button class="heatmap-nav-btn" id="heatmap-next" type="button" aria-label="Next year">&#8250;</button>
             </div>
-            <div class="heatmap-grid" id="heatmap-grid"></div>
+            <div class="heatmap-calendar" id="heatmap-calendar"></div>
             <div class="heatmap-legend" id="heatmap-legend"></div>
         </div>
 
@@ -332,19 +334,23 @@
         }
 
         async function loadHeatmap() {
-            const res = await fetch(`/api/heatmap/${key}`);
-            if (!res.ok) return;
-            const points = await res.json();
+            const currentYear = new Date().getFullYear();
+            let selectedYear = currentYear;
 
-            const dataByDate = {};
-            let minVal = Infinity, maxVal = -Infinity;
-            for (const p of points) {
-                dataByDate[p.date] = p.value;
-                if (key !== 'aqi') {
-                    if (p.value < minVal) minVal = p.value;
-                    if (p.value > maxVal) maxVal = p.value;
-                }
-            }
+            const calendar = document.getElementById('heatmap-calendar');
+            const legendEl = document.getElementById('heatmap-legend');
+            const tooltip = document.getElementById('heatmap-tooltip');
+            const prevBtn = document.getElementById('heatmap-prev');
+            const nextBtn = document.getElementById('heatmap-next');
+            const yearLabel = document.getElementById('heatmap-year-label');
+
+            const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June',
+                                 'July', 'August', 'September', 'October', 'November', 'December'];
+            const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const decimals = key === 'aqi' ? 0 : 1;
 
             function getAQIColor(val) {
                 if (val <= 50)  return '#00e400';
@@ -363,7 +369,7 @@
                 ];
             }
 
-            function getGradientColor(val) {
+            function getGradientColor(val, minVal, maxVal) {
                 if (minVal === maxVal) return meta.color;
                 const t = (val - minVal) / (maxVal - minVal);
                 const base = [26, 26, 26];
@@ -374,130 +380,199 @@
                 return `rgb(${r},${g},${b})`;
             }
 
-            const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            const year = new Date().getFullYear();
-            const today = new Date();
-            today.setHours(23, 59, 59, 999);
-            const decimals = key === 'aqi' ? 0 : 1;
+            function renderLegend(minVal, maxVal) {
+                legendEl.innerHTML = '';
+                if (key === 'aqi') {
+                    const AQI_BANDS = [
+                        { color: '#00e400', label: 'Good' },
+                        { color: '#ffff00', label: 'Moderate' },
+                        { color: '#ff7e00', label: 'Sensitive' },
+                        { color: '#ff0000', label: 'Unhealthy' },
+                        { color: '#8f3f97', label: 'Very Unhealthy' },
+                        { color: '#7e0023', label: 'Hazardous' },
+                    ];
+                    const row = document.createElement('div');
+                    row.className = 'heatmap-legend-aqi';
+                    for (const band of AQI_BANDS) {
+                        const item = document.createElement('div');
+                        item.className = 'heatmap-swatch-item';
+                        const swatch = document.createElement('div');
+                        swatch.className = 'heatmap-swatch';
+                        swatch.style.backgroundColor = band.color;
+                        const lbl = document.createElement('span');
+                        lbl.className = 'heatmap-swatch-label';
+                        lbl.textContent = band.label;
+                        item.appendChild(swatch);
+                        item.appendChild(lbl);
+                        row.appendChild(item);
+                    }
+                    legendEl.appendChild(row);
+                } else if (minVal !== Infinity && maxVal !== -Infinity) {
+                    const gradRow = document.createElement('div');
+                    gradRow.className = 'heatmap-legend-gradient';
 
-            const grid = document.getElementById('heatmap-grid');
-            const tooltip = document.getElementById('heatmap-tooltip');
+                    const minLbl = document.createElement('span');
+                    minLbl.className = 'heatmap-gradient-label';
+                    minLbl.textContent = `${minVal.toFixed(0)}${meta.unit ? ' ' + meta.unit : ''}`;
 
-            for (let month = 0; month < 12; month++) {
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-                const row = document.createElement('div');
-                row.className = 'heatmap-month-row';
-
-                const label = document.createElement('div');
-                label.className = 'heatmap-month-label';
-                label.textContent = MONTHS[month];
-                row.appendChild(label);
-
-                const cells = document.createElement('div');
-                cells.className = 'heatmap-cells';
-
-                for (let day = 1; day <= 31; day++) {
-                    const cell = document.createElement('div');
-
-                    if (day > daysInMonth) {
-                        cell.className = 'heatmap-cell heatmap-cell-empty';
-                        cells.appendChild(cell);
-                        continue;
+                    const blocks = document.createElement('div');
+                    blocks.className = 'heatmap-legend-blocks';
+                    const base = [26, 26, 26];
+                    const end = hexToRgb(meta.color);
+                    for (let i = 0; i < 5; i++) {
+                        const t = i / 4;
+                        const r = Math.round(base[0] + t * (end[0] - base[0]));
+                        const g = Math.round(base[1] + t * (end[1] - base[1]));
+                        const b = Math.round(base[2] + t * (end[2] - base[2]));
+                        const block = document.createElement('div');
+                        block.className = 'heatmap-swatch';
+                        block.style.backgroundColor = `rgb(${r},${g},${b})`;
+                        blocks.appendChild(block);
                     }
 
-                    const date = new Date(year, month, day);
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const val = dataByDate[dateStr];
+                    const maxLbl = document.createElement('span');
+                    maxLbl.className = 'heatmap-gradient-label';
+                    maxLbl.textContent = `${maxVal.toFixed(0)}${meta.unit ? ' ' + meta.unit : ''}`;
 
-                    if (val === undefined || date > today) {
-                        cell.className = 'heatmap-cell heatmap-cell-empty';
-                    } else {
-                        cell.className = 'heatmap-cell';
-                        cell.style.backgroundColor = key === 'aqi' ? getAQIColor(val) : getGradientColor(val);
-
-                        const formatted = `${DAY_NAMES[date.getDay()]}, ${day} ${MONTHS[month]} ${year}`;
-                        const valueStr = `${val.toFixed(decimals)}${meta.unit ? ' ' + meta.unit : ''}`;
-
-                        cell.addEventListener('mouseenter', () => {
-                            tooltip.textContent = `${formatted} · ${valueStr}`;
-                            tooltip.style.display = 'block';
-                        });
-                        cell.addEventListener('mousemove', (e) => {
-                            tooltip.style.left = (e.clientX + 14) + 'px';
-                            tooltip.style.top = (e.clientY - 32) + 'px';
-                        });
-                        cell.addEventListener('mouseleave', () => {
-                            tooltip.style.display = 'none';
-                        });
-                    }
-
-                    cells.appendChild(cell);
+                    gradRow.appendChild(minLbl);
+                    gradRow.appendChild(blocks);
+                    gradRow.appendChild(maxLbl);
+                    legendEl.appendChild(gradRow);
                 }
-
-                row.appendChild(cells);
-                grid.appendChild(row);
             }
 
-            const legend = document.getElementById('heatmap-legend');
-            if (key === 'aqi') {
-                const AQI_BANDS = [
-                    { color: '#00e400', label: 'Good' },
-                    { color: '#ffff00', label: 'Moderate' },
-                    { color: '#ff7e00', label: 'Sensitive' },
-                    { color: '#ff0000', label: 'Unhealthy' },
-                    { color: '#8f3f97', label: 'Very Unhealthy' },
-                    { color: '#7e0023', label: 'Hazardous' },
-                ];
-                const row = document.createElement('div');
-                row.className = 'heatmap-legend-aqi';
-                for (const band of AQI_BANDS) {
-                    const item = document.createElement('div');
-                    item.className = 'heatmap-swatch-item';
-                    const swatch = document.createElement('div');
-                    swatch.className = 'heatmap-swatch';
-                    swatch.style.backgroundColor = band.color;
+            async function fetchAndRender(year) {
+                yearLabel.textContent = year;
+                nextBtn.disabled = year >= currentYear;
+                prevBtn.disabled = true;
+
+                const res = await fetch(`/api/heatmap/${key}?year=${year}`);
+                if (!res.ok) {
+                    calendar.innerHTML = '';
+                    legendEl.innerHTML = '';
+                    return;
+                }
+                const points = await res.json();
+
+                prevBtn.disabled = points.length === 0;
+
+                const dataByDate = {};
+                let minVal = Infinity, maxVal = -Infinity;
+                for (const p of points) {
+                    dataByDate[p.date] = p.value;
+                    if (key !== 'aqi') {
+                        if (p.value < minVal) minVal = p.value;
+                        if (p.value > maxVal) maxVal = p.value;
+                    }
+                }
+
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+
+                calendar.innerHTML = '';
+
+                const jan1DOW = new Date(year, 0, 1).getDay();
+
+                function getWeekIdx(date) {
+                    const dayOfYear = Math.round((date - new Date(year, 0, 1)) / 86400000);
+                    return Math.floor((dayOfYear + jan1DOW) / 7);
+                }
+
+                const numWeeks = getWeekIdx(new Date(year, 11, 31)) + 1;
+
+                const monthWeekStarts = [];
+                for (let m = 0; m < 12; m++) {
+                    monthWeekStarts.push(getWeekIdx(new Date(year, m, 1)));
+                }
+
+                const gh = document.createElement('div');
+                gh.className = 'heatmap-github';
+
+                const corner = document.createElement('div');
+                corner.className = 'heatmap-gh-corner';
+                gh.appendChild(corner);
+
+                const dowEl = document.createElement('div');
+                dowEl.className = 'heatmap-gh-dow';
+                for (const d of DOW) {
+                    const span = document.createElement('span');
+                    span.textContent = d;
+                    dowEl.appendChild(span);
+                }
+                gh.appendChild(dowEl);
+
+                const monthTop = document.createElement('div');
+                monthTop.className = 'heatmap-month-top';
+                monthTop.style.setProperty('--num-weeks', numWeeks);
+                for (let m = 0; m < 12; m++) {
                     const lbl = document.createElement('span');
-                    lbl.className = 'heatmap-swatch-label';
-                    lbl.textContent = band.label;
-                    item.appendChild(swatch);
-                    item.appendChild(lbl);
-                    row.appendChild(item);
+                    lbl.className = 'heatmap-mlabel';
+                    lbl.style.gridColumn = `${monthWeekStarts[m] + 1} / ${m < 11 ? monthWeekStarts[m + 1] + 1 : numWeeks + 1}`;
+                    lbl.textContent = MONTHS_SHORT[m];
+                    monthTop.appendChild(lbl);
                 }
-                legend.appendChild(row);
-            } else if (minVal !== Infinity && maxVal !== -Infinity) {
-                const gradRow = document.createElement('div');
-                gradRow.className = 'heatmap-legend-gradient';
+                gh.appendChild(monthTop);
 
-                const minLbl = document.createElement('span');
-                minLbl.className = 'heatmap-gradient-label';
-                minLbl.textContent = `${minVal.toFixed(decimals)}${meta.unit ? ' ' + meta.unit : ''}`;
+const weeksGrid = document.createElement('div');
+                weeksGrid.className = 'heatmap-weeks';
+                weeksGrid.style.setProperty('--num-weeks', numWeeks);
 
-                const blocks = document.createElement('div');
-                blocks.className = 'heatmap-legend-blocks';
-                const base = [26, 26, 26];
-                const end = hexToRgb(meta.color);
-                for (let i = 0; i < 5; i++) {
-                    const t = i / 4;
-                    const r = Math.round(base[0] + t * (end[0] - base[0]));
-                    const g = Math.round(base[1] + t * (end[1] - base[1]));
-                    const b = Math.round(base[2] + t * (end[2] - base[2]));
-                    const block = document.createElement('div');
-                    block.className = 'heatmap-swatch';
-                    block.style.backgroundColor = `rgb(${r},${g},${b})`;
-                    blocks.appendChild(block);
+                for (let m = 0; m < 12; m++) {
+                    const daysInMonth = new Date(year, m + 1, 0).getDate();
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const date = new Date(year, m, d);
+                        const dow = date.getDay();
+                        const wIdx = getWeekIdx(date);
+                        const dateStr = `${year}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        const val = dataByDate[dateStr];
+
+                        const cell = document.createElement('div');
+                        cell.className = 'heatmap-cell';
+                        cell.style.setProperty('--week', wIdx + 1);
+                        cell.style.setProperty('--dow', dow + 1);
+
+                        if (val === undefined || date > today) {
+                            cell.classList.add('heatmap-cell-empty');
+                        } else {
+                            cell.style.backgroundColor = key === 'aqi'
+                                ? getAQIColor(val)
+                                : getGradientColor(val, minVal, maxVal);
+                            const formatted = `${DAY_NAMES[dow]}, ${d} ${MONTHS_SHORT[m]} ${year}`;
+                            const valueStr = `${val.toFixed(decimals)}${meta.unit ? ' ' + meta.unit : ''}`;
+                            cell.addEventListener('mouseenter', () => {
+                                tooltip.textContent = `${formatted} · ${valueStr}`;
+                                tooltip.style.display = 'block';
+                            });
+                            cell.addEventListener('mousemove', (e) => {
+                                tooltip.style.left = (e.clientX + 14) + 'px';
+                                tooltip.style.top = (e.clientY - 32) + 'px';
+                            });
+                            cell.addEventListener('mouseleave', () => {
+                                tooltip.style.display = 'none';
+                            });
+                        }
+                        weeksGrid.appendChild(cell);
+                    }
                 }
+                gh.appendChild(weeksGrid);
+                calendar.appendChild(gh);
 
-                const maxLbl = document.createElement('span');
-                maxLbl.className = 'heatmap-gradient-label';
-                maxLbl.textContent = `${maxVal.toFixed(decimals)}${meta.unit ? ' ' + meta.unit : ''}`;
-
-                gradRow.appendChild(minLbl);
-                gradRow.appendChild(blocks);
-                gradRow.appendChild(maxLbl);
-                legend.appendChild(gradRow);
+                renderLegend(minVal, maxVal);
             }
+
+            prevBtn.addEventListener('click', () => {
+                if (prevBtn.disabled) return;
+                selectedYear--;
+                fetchAndRender(selectedYear);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (nextBtn.disabled) return;
+                selectedYear++;
+                fetchAndRender(selectedYear);
+            });
+
+            fetchAndRender(selectedYear);
         }
 
         loadCurrent();
