@@ -212,16 +212,6 @@
     margin-bottom: 1rem;
 }
 
-.love {
-    font-size: 0.75rem;
-    color: var(--color-muted, #666);
-    line-height: 1.6;
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-    font-weight: 400;
-    margin-bottom: 1rem;
-}
 
 @keyframes pulse {
     0%,

@@ -109,6 +109,15 @@ footer {
     color: var(--text);
 }
 
+.love {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
 .love-link {
     color: inherit;
     text-decoration: none;
