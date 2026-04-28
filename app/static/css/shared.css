@@ -18,17 +18,23 @@ html[data-theme="light"] {
     --heatmap-base: 215, 215, 215;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .theme-toggle {
     background: none;
     border: none;
+    appearance: none;
+    -webkit-appearance: none;
     color: var(--text-dim);
     cursor: pointer;
-    padding: 0 0.25rem;
+    padding: 0.25rem;
     display: inline-flex;
     align-items: center;
-    min-height: 3rem;
     transition: color 0.2s;
-    margin-left: 1.5rem;
 }
 
 .theme-toggle:hover {
@@ -44,11 +50,6 @@ html[data-theme="light"] {
     stroke-linecap: round;
     stroke-linejoin: round;
 }
-
-html:not([data-theme="light"]) .icon-sun { display: block; }
-html:not([data-theme="light"]) .icon-moon { display: none; }
-html[data-theme="light"] .icon-sun { display: none; }
-html[data-theme="light"] .icon-moon { display: block; }
 
 * {
     margin: 0;
